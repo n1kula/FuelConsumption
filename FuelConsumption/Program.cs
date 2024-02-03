@@ -13,6 +13,33 @@ namespace FuelConsumption
             var cars = ReadFile("fuelConsumption.csv");
             var producers = ReadProducers("producent.csv");
 
+            var groupjoin = from producer in producers
+                            join car in cars
+                            on producer.Name equals car.Producent into carGroup
+                            orderby producer.Name
+                            select new
+                            {
+                                Producent = producer,
+                                Cars = carGroup
+                            };
+
+            var groupJoinExtensionMethod = producers.GroupJoin(cars, p => p.Name, c => c.Producent,
+                                            (p, g) =>
+                                                    new
+                                                    {
+                                                        Producent = p,
+                                                        Cars = g
+                                                    }).OrderBy(p => p.Producent.Name);
+
+            foreach (var group in groupJoinExtensionMethod)
+            {
+                Console.WriteLine($"{group.Producent.Name} : {group.Producent.Address}");
+                foreach (var car in group.Cars.OrderByDescending(c => c.MixedFuelConsumption).Take(2))
+                {
+                    Console.WriteLine($"\t {car.Model} : {car.MixedFuelConsumption}");
+                }
+            }
+
             var groups = from car in cars
                          group car by car.Producent.ToUpper() into producent
                          orderby producent.Key
@@ -23,10 +50,10 @@ namespace FuelConsumption
 
             foreach (var group in groups2)
             {
-                Console.WriteLine(group.Key + " " + group.Count() + " cars");
+                //Console.WriteLine(group.Key + " " + group.Count() + " cars");
                 foreach (var car in group.OrderByDescending(c => c.MixedFuelConsumption).Take(2))
                 {
-                    Console.WriteLine($"\t {car.Model} : {car.MixedFuelConsumption}");
+                   // Console.WriteLine($"\t {car.Model} : {car.MixedFuelConsumption}");
                 }
             }
 
