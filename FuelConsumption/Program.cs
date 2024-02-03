@@ -11,11 +11,16 @@ namespace FuelConsumption
         {
             var cars = ReadFile("fuelConsumption.csv");
 
-            var query = cars.OrderByDescending(c => c.MotorwayFuelConsumption).ThenBy(c => c.Producent);
+            var query = cars.Where(c => c.Producent == "Audi" && c.Year == 2018)
+                            .OrderByDescending(c => c.MotorwayFuelConsumption)
+                            .ThenBy(c => c.Producent)
+                            .First();
 
             var query2 = from car in cars
                          orderby car.MotorwayFuelConsumption descending, car.Producent ascending
                          select car;
+
+            Console.WriteLine(query.Producent + " " + query.Model);
 
             foreach (var car in query2.Take(10))
             {
