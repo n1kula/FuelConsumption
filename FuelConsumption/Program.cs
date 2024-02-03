@@ -16,9 +16,19 @@ namespace FuelConsumption
                             .ThenBy(c => c.Producent)
                             .First();
 
+            var queryAnnonymous = cars.Where(c => c.Producent == "Audi" && c.Year == 2018)
+                            .OrderByDescending(c => c.MotorwayFuelConsumption)
+                            .ThenBy(c => c.Producent)
+                            .Select(c => new {c.Producent, c.Model, c.MotorwayFuelConsumption});
+
             var query2 = from car in cars
                          orderby car.MotorwayFuelConsumption descending, car.Producent ascending
-                         select car;
+                         select new
+                         {
+                             car.Producent,
+                             car.Model,
+                             car.MotorwayFuelConsumption
+                         };
 
             var any = cars.Any(c => c.Producent == "BMW");
             Console.WriteLine(any);
@@ -31,7 +41,7 @@ namespace FuelConsumption
 
             Console.WriteLine(query.Producent + " " + query.Model);
 
-            foreach (var car in query2.Take(10))
+            foreach (var car in queryAnnonymous.Take(10))
             {
                 Console.WriteLine(car.Producent + " " + car.Model + " " + car.MotorwayFuelConsumption);
             }
@@ -39,9 +49,16 @@ namespace FuelConsumption
 
         private static List<Car> ReadFileQuerySyntax(string path)
         {
-            var query = (from line in File.ReadAllLines(path).Skip(1)
-                           where line.Length > 1
-                           select Car.ParseCSV(line));
+            var query = File.ReadAllLines(path)
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .IntoCar();
+                
+                
+                
+                //from line in File.ReadAllLines(path).Skip(1)
+                //           where line.Length > 1
+                //          select Car.ParseCSV(line);
 
             return query.ToList();
         }
@@ -51,8 +68,10 @@ namespace FuelConsumption
             return File.ReadAllLines(path)
                         .Skip(1)
                         .Where(line => line.Length > 1)
-                        .Select(Car.ParseCSV)
+                        .IntoCar()
                         .ToList();
         }
     }
+
+
 }
