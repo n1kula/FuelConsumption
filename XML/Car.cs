@@ -3,7 +3,8 @@
 namespace XML
 {
     public class Car
-    { 
+    {
+        public int Id { get; set; }
         public int Year { get; set; }
         public string Producent { get; set; }
         public string Model { get; set; }

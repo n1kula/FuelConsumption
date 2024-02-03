@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Xml.Linq;
+using System.Data.Entity;
 
 namespace XML
 {
@@ -10,8 +11,29 @@ namespace XML
     {
         static void Main(string[] args)
         {
-            CreateXML();
-            FerrariFromXML();
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<CarDB>());
+            InsetData();
+            //GetData();
+        }
+
+        private static void InsetData()
+        {
+            var cars = ReadFile("fuelConsumption.csv");
+            var db = new CarDB();
+
+            if (!db.Cars.Any())
+            {
+                foreach (var car in cars)
+                {
+                    db.Cars.Add(car);
+                }
+                db.SaveChanges();
+            }
+        }
+
+        private static void GetData()
+        {
+            throw new NotImplementedException();
         }
 
         private static void FerrariFromXML()
