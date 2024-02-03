@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 
 namespace FuelConsumption
 {
@@ -23,7 +24,9 @@ namespace FuelConsumption
                             .Select(c => new {c.Producent, c.Model, c.MotorwayFuelConsumption});
 
             var query2 = from car in cars
-                         join producent in producers on car.Producent equals producent.Name
+                         join producent in producers
+                            on new { car.Producent, car.Year }
+                            equals new { Producent = producent.Name, producent.Year }
                          orderby car.MotorwayFuelConsumption descending, car.Producent ascending
                          select new
                          {
@@ -31,10 +34,9 @@ namespace FuelConsumption
                              car.Model,
                              car.MotorwayFuelConsumption
                          };
-
             var query3 = cars.Join(producers,
-                                        c => c.Producent,
-                                        p => p.Name,
+                                        c => new { c.Producent, c.Year },
+                                        p => new { Producent = p.Name, p.Year },
                                         (c, p) => new
                                         {
                                             p.Address,
