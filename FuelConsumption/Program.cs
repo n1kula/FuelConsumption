@@ -20,6 +20,15 @@ namespace FuelConsumption
                          orderby car.MotorwayFuelConsumption descending, car.Producent ascending
                          select car;
 
+            var any = cars.Any(c => c.Producent == "BMW");
+            Console.WriteLine(any);
+
+            var all = cars.All(c => c.Producent == "BMW");
+            Console.WriteLine(all);
+
+            var contains = cars.Contains<Car>(cars[5]);
+            Console.WriteLine(contains);
+
             Console.WriteLine(query.Producent + " " + query.Model);
 
             foreach (var car in query2.Take(10))
