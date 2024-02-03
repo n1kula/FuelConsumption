@@ -13,7 +13,7 @@ namespace XML
         {
             Database.SetInitializer(new DropCreateDatabaseIfModelChanges<CarDB>());
             InsetData();
-            //GetData();
+            GetData();
         }
 
         private static void InsetData()
@@ -33,7 +33,15 @@ namespace XML
 
         private static void GetData()
         {
-            throw new NotImplementedException();
+            var db = new CarDB();
+            var cars = from car in db.Cars
+                        orderby car.MixedFuelConsumption descending, car.Model ascending
+                        select car;
+
+            foreach (var car in cars)
+            {
+                Console.WriteLine($"{car.Model} : {car.MixedFuelConsumption}");
+            }
         }
 
         private static void FerrariFromXML()
