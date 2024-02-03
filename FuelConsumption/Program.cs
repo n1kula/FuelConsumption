@@ -11,9 +11,13 @@ namespace FuelConsumption
         {
             var cars = ReadFile("fuelConsumption.csv");
 
-            foreach (var car in cars)
+            var query = cars.OrderByDescending(c => c.MotorwayFuelConsumption).ThenBy(c => c.Producent);
+
+         
+
+            foreach (var car in query.Take(10))
             {
-                Console.WriteLine(car.Producent + car.Model);
+                Console.WriteLine(car.Producent + " " + car.Model + " " + car.MotorwayFuelConsumption);
             }
         }
 
