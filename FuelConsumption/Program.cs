@@ -10,6 +10,7 @@ namespace FuelConsumption
         static void Main(string[] args)
         {
             var cars = ReadFile("fuelConsumption.csv");
+            var producers = ReadProducers("producent.csv");
 
             var query = cars.Where(c => c.Producent == "Audi" && c.Year == 2018)
                             .OrderByDescending(c => c.MotorwayFuelConsumption)
@@ -22,10 +23,11 @@ namespace FuelConsumption
                             .Select(c => new {c.Producent, c.Model, c.MotorwayFuelConsumption});
 
             var query2 = from car in cars
+                         join producent in producers on car.Producent equals producent.Name
                          orderby car.MotorwayFuelConsumption descending, car.Producent ascending
                          select new
                          {
-                             car.Producent,
+                             producent.Address,
                              car.Model,
                              car.MotorwayFuelConsumption
                          };
@@ -41,9 +43,9 @@ namespace FuelConsumption
 
             Console.WriteLine(query.Producent + " " + query.Model);
 
-            foreach (var car in queryAnnonymous.Take(10))
+            foreach (var data in query2.Take(10))
             {
-                Console.WriteLine(car.Producent + " " + car.Model + " " + car.MotorwayFuelConsumption);
+                Console.WriteLine(data.Address + " " + data.Model + " " + data.MotorwayFuelConsumption);
             }
 
             //producent
@@ -61,8 +63,9 @@ namespace FuelConsumption
             var producentLettersQuery = cars.SelectMany(c => c.Producent);
             foreach (var letter in producentLettersQuery)
             {
-                Console.WriteLine(letter);
+                //Console.WriteLine(letter);
             }
+
         }
 
         private static List<Car> ReadFileQuerySyntax(string path)
@@ -88,6 +91,23 @@ namespace FuelConsumption
                         .Where(line => line.Length > 1)
                         .IntoCar()
                         .ToList();
+        }
+
+        private static List<Producent> ReadProducers(string path)
+        {
+            var query = File.ReadAllLines(path)
+                            .Where(p => p.Length > 1)
+                            .Select(p =>
+                            {
+                                var columns = p.Split(',');
+                                return new Producent
+                                {
+                                    Name = columns[0],
+                                    Address = columns[1],
+                                    Year = int.Parse(columns[2]),
+                                };
+                            });
+            return query.ToList();
         }
     }
 
