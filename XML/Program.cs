@@ -39,7 +39,9 @@ namespace XML
                         orderby car.MixedFuelConsumption descending, car.Model ascending
                         select car;
 
-            foreach (var car in cars)
+            var cars2 = db.Cars.OrderByDescending(c => c.MixedFuelConsumption).ThenBy(c => c.Model).Take(10);
+
+            foreach (var car in cars2)
             {
                 Console.WriteLine($"{car.Model} : {car.MixedFuelConsumption}");
             }
