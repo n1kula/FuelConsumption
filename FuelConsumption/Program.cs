@@ -13,9 +13,11 @@ namespace FuelConsumption
 
             var query = cars.OrderByDescending(c => c.MotorwayFuelConsumption).ThenBy(c => c.Producent);
 
-         
+            var query2 = from car in cars
+                         orderby car.MotorwayFuelConsumption descending, car.Producent ascending
+                         select car;
 
-            foreach (var car in query.Take(10))
+            foreach (var car in query2.Take(10))
             {
                 Console.WriteLine(car.Producent + " " + car.Model + " " + car.MotorwayFuelConsumption);
             }
