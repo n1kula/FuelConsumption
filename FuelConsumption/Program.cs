@@ -13,6 +13,23 @@ namespace FuelConsumption
             var cars = ReadFile("fuelConsumption.csv");
             var producers = ReadProducers("producent.csv");
 
+            var groups = from car in cars
+                         group car by car.Producent.ToUpper() into producent
+                         orderby producent.Key
+                         select producent;
+
+            var groups2 = cars.GroupBy(c => c.Producent.ToUpper())
+                              .OrderBy(g => g.Key);
+
+            foreach (var group in groups2)
+            {
+                Console.WriteLine(group.Key + " " + group.Count() + " cars");
+                foreach (var car in group.OrderByDescending(c => c.MixedFuelConsumption).Take(2))
+                {
+                    Console.WriteLine($"\t {car.Model} : {car.MixedFuelConsumption}");
+                }
+            }
+
             var query = cars.Where(c => c.Producent == "Audi" && c.Year == 2018)
                             .OrderByDescending(c => c.MotorwayFuelConsumption)
                             .ThenBy(c => c.Producent)
