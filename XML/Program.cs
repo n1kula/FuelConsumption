@@ -11,19 +11,23 @@ namespace XML
         static void Main(string[] args)
         {
             CreateXML();
-            QueryXML();
+            FerrariFromXML();
         }
 
-        private static void QueryXML()
+        private static void FerrariFromXML()
         {
             var document = XDocument.Load("data.xml");
-            var query = from element in document.Element("Cars").Elements("Car")
+            var query = from element in document.Element("Cars").Elements("Car") 
                         where element.Attribute("Producent").Value == "Ferrari"
-                        select element.Attribute("Model").Value;
+                        select new
+                        {
+                            model = element.Attribute("Model").Value,
+                            producent = element.Attribute("Producent").Value,
+                        };
 
-            foreach (var model in query)
+            foreach (var car in query)
             {
-                Console.WriteLine(model);
+                Console.WriteLine(car.model + " " + car.producent);
             }
         }
 
