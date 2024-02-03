@@ -45,6 +45,24 @@ namespace FuelConsumption
             {
                 Console.WriteLine(car.Producent + " " + car.Model + " " + car.MotorwayFuelConsumption);
             }
+
+            //producent
+            var producentQuery = cars.Select(c => c.Producent);
+
+            foreach (var producent in producentQuery)
+            {
+                foreach (var letter in producent)
+                {
+                    //Console.WriteLine(letter);
+                }
+                //Console.WriteLine(producent);
+            }
+
+            var producentLettersQuery = cars.SelectMany(c => c.Producent);
+            foreach (var letter in producentLettersQuery)
+            {
+                Console.WriteLine(letter);
+            }
         }
 
         private static List<Car> ReadFileQuerySyntax(string path)
