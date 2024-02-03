@@ -11,6 +11,20 @@ namespace XML
         static void Main(string[] args)
         {
             CreateXML();
+            QueryXML();
+        }
+
+        private static void QueryXML()
+        {
+            var document = XDocument.Load("data.xml");
+            var query = from element in document.Element("Cars").Elements("Car")
+                        where element.Attribute("Producent").Value == "Ferrari"
+                        select element.Attribute("Model").Value;
+
+            foreach (var model in query)
+            {
+                Console.WriteLine(model);
+            }
         }
 
         private static void CreateXML()
