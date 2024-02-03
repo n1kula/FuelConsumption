@@ -34,6 +34,7 @@ namespace XML
         private static void GetData()
         {
             var db = new CarDB();
+            db.Database.Log = Console.WriteLine;
             var cars = from car in db.Cars
                         orderby car.MixedFuelConsumption descending, car.Model ascending
                         select car;
