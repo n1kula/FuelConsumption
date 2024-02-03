@@ -29,12 +29,15 @@ namespace FuelConsumption
                                                     {
                                                         Producent = p,
                                                         Cars = g
-                                                    }).OrderBy(p => p.Producent.Name);
+                                                    }).OrderBy(p => p.Producent.Address)
+                                                    .GroupBy(c => c.Producent.Address);
 
             foreach (var group in groupJoinExtensionMethod)
             {
-                Console.WriteLine($"{group.Producent.Name} : {group.Producent.Address}");
-                foreach (var car in group.Cars.OrderByDescending(c => c.MixedFuelConsumption).Take(2))
+                //Console.WriteLine($"{group.Producent.Name} : {group.Producent.Address}");
+                Console.WriteLine($"{group.Key}");
+                //foreach (var car in group.Cars.OrderByDescending(c => c.MixedFuelConsumption).Take(2))
+                foreach (var car in group.SelectMany(g => g.Cars).OrderByDescending(c => c.MixedFuelConsumption).Take(3))
                 {
                     Console.WriteLine($"\t {car.Model} : {car.MixedFuelConsumption}");
                 }
