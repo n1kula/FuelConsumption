@@ -32,6 +32,19 @@ namespace FuelConsumption
                              car.MotorwayFuelConsumption
                          };
 
+            var query3 = cars.Join(producers,
+                                        c => c.Producent,
+                                        p => p.Name,
+                                        (c, p) => new
+                                        {
+                                            p.Address,
+                                            c.Producent,
+                                            c.Model,
+                                            c.MotorwayFuelConsumption
+                                        })
+                               .OrderByDescending(c => c.MotorwayFuelConsumption)
+                               .ThenBy(c => c.Producent);
+
             var any = cars.Any(c => c.Producent == "BMW");
             Console.WriteLine(any);
 
@@ -43,7 +56,7 @@ namespace FuelConsumption
 
             Console.WriteLine(query.Producent + " " + query.Model);
 
-            foreach (var data in query2.Take(10))
+            foreach (var data in query3.Take(10))
             {
                 Console.WriteLine(data.Address + " " + data.Model + " " + data.MotorwayFuelConsumption);
             }
