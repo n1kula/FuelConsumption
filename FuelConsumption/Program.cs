@@ -13,6 +13,26 @@ namespace FuelConsumption
             var cars = ReadFile("fuelConsumption.csv");
             var producers = ReadProducers("producent.csv");
 
+            var aggregation = from car in cars
+                              group car by car.Producent into carGroup
+                              select new
+                              {
+                                  Name = carGroup.Key,
+                                  Max = carGroup.Max(c => c.MixedFuelConsumption),
+                                  Min = carGroup.Min(c => c.MixedFuelConsumption),
+                                  Avg = carGroup.Average(c => c.MixedFuelConsumption)
+                              } into result
+                              orderby result.Max descending
+                              select result;
+
+            foreach (var result in aggregation)
+            {
+                Console.WriteLine($"{result.Name}");
+                Console.WriteLine($"\t max;{result.Max}");
+                Console.WriteLine($"\t min:{result.Min}");
+                Console.WriteLine($"\t avg:{result.Avg}");
+            }
+
             var groupjoin = from producer in producers
                             join car in cars
                             on producer.Name equals car.Producent into carGroup
