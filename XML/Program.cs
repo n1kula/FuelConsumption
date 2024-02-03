@@ -10,20 +10,21 @@ namespace XML
     {
         static void Main(string[] args)
         {
+            CreateXML();
+        }
+
+        private static void CreateXML()
+        {
             var records = ReadFile("fuelConsumption.csv");
             var document = new XDocument();
-            var cars = new XElement("Cars");
-            foreach (var item in records)
-            {
-                var car = new XElement("Car");
-                var producent = new XElement("Producent", item.Producent);
-                var model = new XElement("Model", item.Model);
-                var fuelCons = new XElement("FuelCons", item.MotorwayFuelConsumption);
-                car.Add(producent);
-                car.Add(model);
-                car.Add(fuelCons);
-                cars.Add(car);
-            }
+            var cars = new XElement("Cars", from record in records
+                                            select new XElement("Car",
+                                                                 new XAttribute("Year", record.Year),
+                                                                 new XAttribute("Producent", record.Producent),
+                                                                 new XAttribute("Model", record.Model),
+                                                                 new XAttribute("FuelCons", record.MotorwayFuelConsumption)
+                                                                 ));
+
             document.Add(cars);
             document.Save("data.xml");
         }
